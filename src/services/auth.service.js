@@ -64,6 +64,27 @@ const findTokenByUserId = async (id) => {
   return result;
 };
 
+const addGoogleId = async (data) => {
+  const { username, googleId } = data;
+  const user = new User({
+    username,
+    googleId,
+  });
+
+  await user.save();
+};
+
+
+const addGithubId = async (data) => {
+  const { username, githubId } = data;
+  const user = new User({
+    username,
+    githubId,
+  });
+
+  await user.save();
+};
+
 module.exports = {
   register,
   getUserByUsername,
@@ -72,4 +93,6 @@ module.exports = {
   getUserByMail,
   addResetToken,
   findTokenByUserId,
+  addGoogleId,
+  addGithubId,
 };

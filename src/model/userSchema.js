@@ -9,9 +9,9 @@ const userSchema = mongoose.Schema({
   },
   email: {
     type: String,
-    require: true,
+    // require: true,
     trim: true,
-    unique: true,
+    // unique: true,
   },
   password: {
     type: String,
@@ -29,6 +29,12 @@ const userSchema = mongoose.Schema({
   isDeleted: {
     type: Boolean,
     default: false,
+  },
+  googleId: {
+    type: String,
+  },
+  githubId: {
+    type: String,
   },
 });
 

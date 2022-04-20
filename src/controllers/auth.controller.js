@@ -128,7 +128,7 @@ const sendResetPaswordToken = async (req, res, next) => {
     }
 
     const token = await AuthService.addResetToken(user._id);
-    console.log("reset token: " + token)
+    console.log("reset token: " + token);
     const template = resetPasswordMail(token, user._id);
     await mailer(user.email, template);
 
@@ -155,7 +155,7 @@ const resetPasword = async (req, res, next) => {
       next();
     }
 
-    let passwordResetToken = await AuthService.findTokenByUserId(userId)
+    let passwordResetToken = await AuthService.findTokenByUserId(userId);
     if (!passwordResetToken) {
       res.status(403).send({
         success: false,
@@ -165,7 +165,7 @@ const resetPasword = async (req, res, next) => {
       next();
     }
     const isValid = await bcrypt.compare(token, passwordResetToken.token);
-    console.log(isValid)
+    console.log(isValid);
     if (!isValid) {
       res.status(403).send({
         success: false,
@@ -188,10 +188,46 @@ const resetPasword = async (req, res, next) => {
   }
 };
 
+const authGoogle = async (req, res, next) => {
+  try {
+    const { id, displayName } = req.user;
+
+    const user = {
+      username: displayName,
+      googleId: id,
+    };
+
+    await AuthService.addGoogleId(user);
+
+    res.redirect("/login-success");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const authGithub = async (req, res, next) => {
+  try {
+    const { id, displayName } = req.user;
+
+    const user = {
+      username: displayName,
+      googleId: id,
+    };
+
+    await AuthService.addGithubId(user);
+
+    res.redirect("/login-success");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   changePassword,
   sendResetPaswordToken,
   resetPasword,
+  authGoogle,
+  authGithub,
 };
