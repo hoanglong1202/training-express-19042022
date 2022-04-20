@@ -118,7 +118,7 @@ const sendResetPaswordToken = async (req, res, next) => {
     const { id } = req.params;
     const user = await AuthService.getUserById(id);
 
-    if (!user) {
+    if (!user || !user.email) {
       res.status(403).send({
         success: false,
         message: "Not authorization",
@@ -128,7 +128,6 @@ const sendResetPaswordToken = async (req, res, next) => {
     }
 
     const token = await AuthService.addResetToken(user._id);
-    console.log("reset token: " + token);
     const template = resetPasswordMail(token, user._id);
     await mailer(user.email, template);
 
