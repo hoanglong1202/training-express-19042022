@@ -1,4 +1,7 @@
+const Token = require("../model/tokenSchema");
 const User = require("../model/userSchema");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
 const register = async (data) => {
   const { username, email, password } = data;
@@ -37,10 +40,36 @@ const changePassword = async (username, newPassword) => {
   return result;
 };
 
+const addResetToken = async (id) => {
+  const token = await Token.findOne({ userId: id });
+
+  if (token) {
+    await Token.deleteOne({ userId: id });
+  }
+
+  let resetToken = crypto.randomBytes(32).toString("hex");
+  const hashToken = await bcrypt.hash(resetToken, Number(process.env.SALT_ROUND));
+
+  const newToken = new Token({
+    userId: id,
+    token: hashToken,
+  });
+
+  newToken.save();
+  return resetToken;
+};
+
+const findTokenByUserId = async (id) => {
+  const result = await Token.findOne({ userId: id });
+  return result;
+};
+
 module.exports = {
   register,
   getUserByUsername,
   changePassword,
   getUserById,
   getUserByMail,
+  addResetToken,
+  findTokenByUserId,
 };
