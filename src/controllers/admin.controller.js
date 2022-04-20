@@ -24,6 +24,7 @@ const updateUserInfor = async (req, res, next) => {
         success: false,
         message: "user is not exist",
       });
+      next();
     }
 
     const updateData = { username };
@@ -50,6 +51,7 @@ const deleteUser = async (req, res, next) => {
           success: false,
           message: "Request is not valid",
         });
+        next();
       }
     }
 
@@ -75,6 +77,7 @@ const activeUser = async (req, res, next) => {
           success: false,
           message: "Request is not valid",
         });
+        next();
       }
     }
 
@@ -100,6 +103,7 @@ const inactiveUser = async (req, res, next) => {
           success: false,
           message: "Request is not valid",
         });
+        next();
       }
     }
 

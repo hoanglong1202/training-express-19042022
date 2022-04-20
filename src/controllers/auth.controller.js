@@ -4,7 +4,7 @@ const { AuthService } = require("../services");
 
 const register = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
 
     const user = await AuthService.getUserByUsername(username);
 
@@ -13,12 +13,21 @@ const register = async (req, res, next) => {
         success: false,
         message: "Dupplicated Username",
       });
+
+      next();
     }
 
-    const hashPassword = await bcrypt.hash(
-      password,
-      Number(process.env.SALT_ROUND)
-    );
+    const userMail = await AuthService.getUserByMail(email);
+    if (userMail) {
+      res.status(403).send({
+        success: false,
+        message: "Dupplicated User Mail",
+      });
+
+      next();
+    }
+
+    const hashPassword = await bcrypt.hash(password, Number(process.env.SALT_ROUND));
 
     await AuthService.register({ ...req.body, password: hashPassword });
 
@@ -42,6 +51,8 @@ const login = async (req, res, next) => {
         success: false,
         message: "Login failed",
       });
+
+      next();
     }
 
     const rightPassword = await bcrypt.compare(password, user.password);
@@ -51,6 +62,8 @@ const login = async (req, res, next) => {
         success: false,
         message: "Login failed",
       });
+
+      next();
     }
 
     const token = jwt.sign(
@@ -80,12 +93,11 @@ const changePassword = async (req, res) => {
         success: false,
         message: "Not authorization",
       });
+
+      next();
     }
 
-    const hashPassword = await bcrypt.hash(
-      password,
-      Number(process.env.SALT_ROUND)
-    );
+    const hashPassword = await bcrypt.hash(password, Number(process.env.SALT_ROUND));
 
     const result = await AuthService.changePassword(username, hashPassword);
 

@@ -1,14 +1,20 @@
 const User = require("../model/userSchema");
 
 const register = async (data) => {
-  const { username, password } = data;
+  const { username, email, password } = data;
 
-  const newUser = new User({ username, password });
+  const newUser = new User({ username, email, password });
   await newUser.save();
 };
 
 const getUserByUsername = async (username) => {
   const result = await User.findOne({ username });
+
+  return result;
+};
+
+const getUserByMail = async (email) => {
+  const result = await User.findOne({ email });
 
   return result;
 };
@@ -36,4 +42,5 @@ module.exports = {
   getUserByUsername,
   changePassword,
   getUserById,
+  getUserByMail,
 };
