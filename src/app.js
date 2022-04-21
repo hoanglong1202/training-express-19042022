@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const passport = require("passport");
+const helmet = require("helmet");
+const morgan = require("morgan");
 const app = express();
 require("dotenv").config();
 
@@ -12,6 +14,9 @@ const PORT = process.env.PORT || 5010;
 
 // parse json request body
 app.use(express.json());
+
+app.use(helmet());
+app.use(morgan("common"));
 
 // parse urlencoded request body
 app.use(express.urlencoded({ extended: true }));
@@ -65,6 +70,28 @@ app.get("/login-success", (req, res) => {
 
 app.use("/api", routes);
 
+app.use((err, req, res, next) => {
+  const msg = `${req.url}---${req.method}---${err.status}---${err.message}`;
+
+  res.status(err.status || 500);
+  res.send({
+    status: err.status || 500,
+    message: err.message,
+    link: {
+      docs: 'https://docs.com',
+    },
+  });
+})
+
 mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });
+
+mongoose.connection.on("connected", () => console.log("MongoDB connects successfully"));
+mongoose.connection.on("disconnected", () => console.log("MongoDB disconnects successfully"));
+mongoose.connection.on("error", (error) => console.log("MongoDB didnt connect successfully" + error));
+
+process.on("SIGINT", () => {
+  mongoose.connection.close();
+  process.exit(0);
+});
 
 app.listen(PORT, () => console.log(`Server listen on ${PORT}`));
