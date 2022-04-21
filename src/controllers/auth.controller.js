@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const mailer = require("../helpers/mailer");
 const { resetPasswordMail } = require("../helpers/mailTemplate");

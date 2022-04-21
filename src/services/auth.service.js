@@ -1,7 +1,7 @@
 const Token = require("../model/tokenSchema");
 const User = require("../model/userSchema");
 const crypto = require("crypto");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const register = async (data) => {
   const { username, email, password } = data;

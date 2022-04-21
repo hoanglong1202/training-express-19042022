@@ -87,7 +87,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true });
 
 mongoose.connection.on("connected", () => console.log("MongoDB connects successfully"));
 mongoose.connection.on("disconnected", () => console.log("MongoDB disconnects successfully"));
-mongoose.connection.on("error", (error) => console.log("MongoDB didnt connect successfully" + error));
+mongoose.connection.on("error", (error) => console.log("MongoDB didnt connect successfully " + error));
 
 process.on("SIGINT", () => {
   mongoose.connection.close();
