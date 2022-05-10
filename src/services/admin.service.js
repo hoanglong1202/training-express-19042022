@@ -1,7 +1,7 @@
 const User = require("../model/userSchema");
 
 const getAllUser = async () => {
-  const result = await User.find({}).select("-password -isDeleted");
+  const result = await User.find({ isDeleted: false }).select("-password -isDeleted");
 
   return result;
 };

@@ -2,7 +2,7 @@ const { AdminService, AuthService } = require("../services");
 
 const getAllUser = async (req, res, next) => {
   try {
-    const result = await AdminService.getAllUser({ isDeleted: false });
+    const result = await AdminService.getAllUser();
 
     res.status(200).send({
       success: true,
